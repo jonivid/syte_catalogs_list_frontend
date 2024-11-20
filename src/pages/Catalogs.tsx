@@ -34,9 +34,8 @@ import {
   Catalog,
   CreateCatalogPayload,
   UpdateCatalogPayload,
-  VerticalType,
 } from "../types/catalog";
-import CatalogDialog from "./CatalogDialog";
+import CatalogDialog from "../components/CatalogDialog";
 
 const Catalogs: React.FC = () => {
   const [catalogs, setCatalogs] = useState<Catalog[]>([]);
@@ -73,26 +72,6 @@ const Catalogs: React.FC = () => {
     setIsEditMode(false);
   };
 
-  // Save or update catalog
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      if (isEditMode && currentCatalog.id) {
-        await api.put(`/catalogs/${currentCatalog.id}`, currentCatalog);
-        toast.success("Catalog updated successfully");
-      } else {
-        await api.post("/catalogs", currentCatalog as CreateCatalogPayload);
-        toast.success("Catalog created successfully");
-      }
-      fetchCatalogs();
-      handleCloseDialog();
-    } catch (error) {
-      toast.error("Failed to save catalog");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Handle selection for bulk delete
   const handleSelect = (id: number) => {
     setSelectedIds((prev) =>
@@ -120,29 +99,29 @@ const Catalogs: React.FC = () => {
     }
   };
 
-const handleSaveCatalog = async (
-  payload: CreateCatalogPayload | UpdateCatalogPayload,
-) => {
-  setLoading(true);
-  try {
-    if (isEditMode && (payload as UpdateCatalogPayload).id) {
-      await api.put(
-        `/catalogs/${(payload as UpdateCatalogPayload).id}`,
-        payload,
-      );
-      toast.success("Catalog updated successfully");
-    } else {
-      await api.post("/catalogs", payload);
-      toast.success("Catalog created successfully");
+  const handleSaveCatalog = async (
+    payload: CreateCatalogPayload | UpdateCatalogPayload,
+  ) => {
+    setLoading(true);
+    try {
+      if (isEditMode && (payload as UpdateCatalogPayload).id) {
+        await api.put(
+          `/catalogs/${(payload as UpdateCatalogPayload).id}`,
+          payload,
+        );
+        toast.success("Catalog updated successfully");
+      } else {
+        await api.post("/catalogs", payload);
+        toast.success("Catalog created successfully");
+      }
+      fetchCatalogs();
+      handleCloseDialog();
+    } catch (error) {
+      toast.error("Failed to save catalog");
+    } finally {
+      setLoading(false);
     }
-    fetchCatalogs();
-    handleCloseDialog();
-  } catch (error) {
-    toast.error("Failed to save catalog");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     fetchCatalogs();
@@ -185,8 +164,9 @@ const handleSaveCatalog = async (
               </TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Vertical</TableCell>
-              <TableCell>Locales</TableCell>
+              <TableCell>Multi Local</TableCell>
               <TableCell>Primary</TableCell>
+              <TableCell>Last Indexed</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -208,8 +188,15 @@ const handleSaveCatalog = async (
                 </TableCell>
                 <TableCell>{catalog.name}</TableCell>
                 <TableCell>{catalog.vertical}</TableCell>
-                <TableCell>{catalog.locales.join(", ")}</TableCell>
+                <TableCell>
+                  {catalog.locales.length > 1 ? "Yes" : "No"}
+                </TableCell>
                 <TableCell>{catalog.primary ? "Yes" : "No"}</TableCell>
+                <TableCell>
+                  {catalog.indexedAt
+                    ? new Date(catalog.indexedAt).toLocaleString()
+                    : "N/A"}
+                </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleOpenDialog(catalog)}>
                     <EditIcon />

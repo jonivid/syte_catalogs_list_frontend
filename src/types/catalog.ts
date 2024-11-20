@@ -1,9 +1,8 @@
 // Enum for vertical types (Assuming common types from the backend service)
 export enum VerticalType {
-  RETAIL = "RETAIL",
-  WHOLESALE = "WHOLESALE",
-  ECOMMERCE = "ECOMMERCE",
-  SERVICES = "SERVICES",
+  FASHION = "fashion",
+  HOME = "home",
+  GENERAL = "general",
 }
 
 // Interface for Catalog entity
@@ -14,6 +13,7 @@ export interface Catalog {
   primary: boolean;
   locales: string[];
   createdAt: string;
+  indexedAt: Date | string;
 }
 
 // Payload for creating a new catalog
