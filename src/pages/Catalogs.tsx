@@ -78,7 +78,19 @@ const Catalogs: React.FC = () => {
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
+  const handleDelete = async (id: number) => {
+    try {
+      // Call the backend API to delete the catalog
+      await api.delete(`/catalogs/${id}`);
+      toast.success("Catalog deleted successfully");
+      setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
 
+      // Refresh the catalog list after deletion
+      fetchCatalogs();
+    } catch (error) {
+      toast.error("Failed to delete catalog");
+    }
+  };
   // Bulk delete action
   const handleBulkDelete = async () => {
     if (selectedIds.length === 0) {
@@ -122,7 +134,15 @@ const Catalogs: React.FC = () => {
       setLoading(false);
     }
   };
-
+  const handleIndexAll = async () => {
+    try {
+      await api.post("/catalogs/index-all"); // Backend endpoint
+      toast.success("All catalogs indexed successfully");
+      fetchCatalogs(); // Refresh the catalog list
+    } catch (error) {
+      toast.error("Failed to index all catalogs");
+    }
+  };
   useEffect(() => {
     fetchCatalogs();
   }, []);
@@ -140,6 +160,9 @@ const Catalogs: React.FC = () => {
           onClick={() => handleOpenDialog()}
         >
           <AddIcon /> Add Catalog
+        </Button>
+        <Button onClick={handleIndexAll} variant="contained" color="success">
+          Index All Catalogs
         </Button>
         <Button variant="outlined" color="error" onClick={handleBulkDelete}>
           Delete Selected
@@ -203,7 +226,7 @@ const Catalogs: React.FC = () => {
                   </IconButton>
                   <IconButton
                     color="error"
-                    onClick={() => handleSelect(catalog.id)}
+                    onClick={() => handleDelete(catalog.id)}
                   >
                     <DeleteIcon />
                   </IconButton>
