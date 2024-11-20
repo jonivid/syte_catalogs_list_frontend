@@ -218,7 +218,7 @@ const Catalogs: React.FC = () => {
                 <TableCell>
                   {catalog.indexedAt
                     ? new Date(catalog.indexedAt).toLocaleString()
-                    : "N/A"}
+                    : "Not Indexed Yet"}
                 </TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleOpenDialog(catalog)}>
