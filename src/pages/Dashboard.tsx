@@ -68,6 +68,54 @@ const Dashboard: React.FC = () => {
             </Button>
           </Paper>
         </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper
+            elevation={3}
+            sx={{
+              padding: 3,
+              textAlign: "center",
+              backgroundColor: "#2d2d2d",
+              color: "#ffffff",
+            }}
+          >
+            <Typography variant="h6">Analytics</Typography>
+            <Typography variant="body1" color="textSecondary">
+              View your catalog analytics and reports (Coming Soon).
+            </Typography>
+            <Button
+              variant="outlined"
+              color="primary"
+              disabled
+              sx={{ marginTop: 2 }}
+            >
+              View Analytics
+            </Button>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper
+            elevation={3}
+            sx={{
+              padding: 3,
+              textAlign: "center",
+              backgroundColor: "#2d2d2d",
+              color: "#ffffff",
+            }}
+          >
+            <Typography variant="h6">Analytics</Typography>
+            <Typography variant="body1" color="textSecondary">
+              View your catalog analytics and reports (Coming Soon).
+            </Typography>
+            <Button
+              variant="outlined"
+              color="primary"
+              disabled
+              sx={{ marginTop: 2 }}
+            >
+              View Analytics
+            </Button>
+          </Paper>
+        </Grid>
       </Grid>
 
       {/* Logout Button */}

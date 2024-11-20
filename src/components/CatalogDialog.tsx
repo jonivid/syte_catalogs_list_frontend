@@ -28,17 +28,19 @@ import AddIcon from "@mui/icons-material/Add";
 interface CatalogDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (data: CreateCatalogPayload | UpdateCatalogPayload) => void;
   isEditMode: boolean;
   currentCatalog?: Partial<CreateCatalogPayload | UpdateCatalogPayload>;
+  createCatalog: (data: CreateCatalogPayload) => void;
+  updateCatalog: (data: UpdateCatalogPayload) => void;
 }
 
 const CatalogDialog: React.FC<CatalogDialogProps> = ({
   open,
   onClose,
-  onSave,
   isEditMode,
   currentCatalog = {},
+  createCatalog,
+  updateCatalog,
 }) => {
   const [name, setName] = useState<string>(currentCatalog.name || "");
   const [vertical, setVertical] = useState<VerticalType>(
@@ -88,7 +90,7 @@ const CatalogDialog: React.FC<CatalogDialogProps> = ({
         primary,
         locales,
       };
-      onSave(payload); // TypeScript knows this is UpdateCatalogPayload
+      updateCatalog(payload); // TypeScript knows this is UpdateCatalogPayload
     } else {
       const payload: CreateCatalogPayload = {
         name,
@@ -96,7 +98,7 @@ const CatalogDialog: React.FC<CatalogDialogProps> = ({
         primary,
         locales,
       };
-      onSave(payload); // TypeScript knows this is CreateCatalogPayload
+      createCatalog(payload); // TypeScript knows this is CreateCatalogPayload
     }
   };
 
