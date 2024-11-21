@@ -26,6 +26,7 @@ import {
 } from "../api/catalogService";
 import GenericTable from "../components/GenericTable";
 import { toCamelCase } from "../utils/utilsFunctions";
+import { useDebounce } from "../hooks/useDebounce";
 
 interface TableColumn<T> {
   key: keyof T | string;
@@ -40,18 +41,18 @@ const Catalogs: React.FC = () => {
   const [currentCatalog, setCurrentCatalog] = useState<Partial<Catalog>>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState<string>(""); // Free-text search
-  const [multiLocaleFilter, setMultiLocaleFilter] = useState<boolean>(false); // Multi-locale filter
+  const [searchText, setSearchText] = useState<string>("");
+  const [multiLocaleFilter, setMultiLocaleFilter] = useState<boolean>(false);
   const [columns] = useState<TableColumn<Catalog>[]>([
     {
       key: "name",
       label: "Name",
-      render: (item) => toCamelCase(item.name), // Apply camel case
+      render: (item) => toCamelCase(item.name),
     },
     {
       key: "vertical",
       label: "Vertical",
-      render: (item) => toCamelCase(item.vertical), // Apply camel case
+      render: (item) => toCamelCase(item.vertical),
     },
     {
       key: "locales",
@@ -232,12 +233,16 @@ const Catalogs: React.FC = () => {
     }
   };
 
+  //lifecycle events
+  const debouncedSearchText = useDebounce(searchText, 600);
+
+  // useEffect(() => {
+  //   fetchCatalogs();
+  // }, []);
+
   useEffect(() => {
-    fetchCatalogs();
-  }, []);
-  useEffect(() => {
-    fetchCatalogs(searchText, multiLocaleFilter);
-  }, [searchText, multiLocaleFilter]);
+    fetchCatalogs(debouncedSearchText, multiLocaleFilter);
+  }, [debouncedSearchText, multiLocaleFilter]);
 
   return (
     <Box sx={{ padding: 3 }}>
