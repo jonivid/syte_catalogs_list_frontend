@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Button, Grid, Paper } from "@mui/material";
+import { Box, Typography, Button, Grid, Paper, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,6 +9,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Box sx={{ padding: 3 }}>
+      {/* Page Header */}
       <Typography variant="h4" color="primary" gutterBottom>
         Welcome to Syte - Catalogs Dashboard
       </Typography>
@@ -16,7 +17,8 @@ const Dashboard: React.FC = () => {
         Hello, {username || "User"}! Here are your options:
       </Typography>
 
-      <Grid container spacing={3}>
+      {/* Features Section */}
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ marginTop: 2 }}>
         {/* Card 1: View Catalogs */}
         <Grid item xs={12} md={6}>
           <Paper
@@ -26,6 +28,7 @@ const Dashboard: React.FC = () => {
               textAlign: "center",
               backgroundColor: "#2d2d2d",
               color: "#ffffff",
+              "&:hover": { backgroundColor: "#3d3d3d" },
             }}
           >
             <Typography variant="h6">Manage Catalogs</Typography>
@@ -43,7 +46,7 @@ const Dashboard: React.FC = () => {
           </Paper>
         </Grid>
 
-        {/* Card 2: Analytics (Placeholder for Future Feature) */}
+        {/* Card 2: Discover Page */}
         <Grid item xs={12} md={6}>
           <Paper
             elevation={3}
@@ -52,68 +55,27 @@ const Dashboard: React.FC = () => {
               textAlign: "center",
               backgroundColor: "#2d2d2d",
               color: "#ffffff",
+              "&:hover": { backgroundColor: "#3d3d3d" },
             }}
           >
-            <Typography variant="h6">Analytics</Typography>
+            <Typography variant="h6">Discover Page</Typography>
             <Typography variant="body1" color="textSecondary">
-              View your catalog analytics and reports (Coming Soon).
+              A visually dynamic space for trending products, AI-powered
+              recommendations, and personalized collections based on user
+              behavior (Coming Soon).
             </Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              disabled
-              sx={{ marginTop: 2 }}
-            >
-              View Analytics
-            </Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper
-            elevation={3}
-            sx={{
-              padding: 3,
-              textAlign: "center",
-              backgroundColor: "#2d2d2d",
-              color: "#ffffff",
-            }}
-          >
-            <Typography variant="h6">Analytics</Typography>
-            <Typography variant="body1" color="textSecondary">
-              View your catalog analytics and reports (Coming Soon).
-            </Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              disabled
-              sx={{ marginTop: 2 }}
-            >
-              View Analytics
-            </Button>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper
-            elevation={3}
-            sx={{
-              padding: 3,
-              textAlign: "center",
-              backgroundColor: "#2d2d2d",
-              color: "#ffffff",
-            }}
-          >
-            <Typography variant="h6">Analytics</Typography>
-            <Typography variant="body1" color="textSecondary">
-              View your catalog analytics and reports (Coming Soon).
-            </Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              disabled
-              sx={{ marginTop: 2 }}
-            >
-              View Analytics
-            </Button>
+            <Tooltip title="This feature is coming soon!" arrow>
+              <span>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  disabled
+                  sx={{ marginTop: 2 }}
+                >
+                  Explore Discover Page
+                </Button>
+              </span>
+            </Tooltip>
           </Paper>
         </Grid>
       </Grid>
