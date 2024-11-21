@@ -13,7 +13,6 @@ import darkTheme from "./style/theme";
 import ErrorFallback from "./components/ErrorBoundary";
 import { ErrorBoundary } from "react-error-boundary";
 import { getToken } from "./utils/storage";
-import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/AuthContext";

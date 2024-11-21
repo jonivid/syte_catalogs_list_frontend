@@ -1,4 +1,9 @@
-import { Catalog, CreateCatalogPayload, UpdateCatalogPayload } from "../types/catalog";
+import {
+  Catalog,
+  CreateCatalogPayload,
+  IndexCatalogsResponse,
+  UpdateCatalogPayload,
+} from "../types/catalog";
 import api from "./axiosInstance";
 
 export const fetchCatalogsApi = async (
@@ -36,6 +41,12 @@ export const bulkDeleteCatalogsApi = async (ids: number[]): Promise<void> => {
   await api.post("/catalogs/bulk_delete", { ids });
 };
 
-export const indexAllCatalogsApi = async (): Promise<void> => {
-  await api.post("/catalogs/index-all");
+export const indexCatalogsByIdApi = async (
+  ids: number[],
+): Promise<IndexCatalogsResponse> => {
+  const response = await api.post<IndexCatalogsResponse>(
+    "/catalogs/index_selected",
+    { ids },
+  );
+  return response.data;
 };

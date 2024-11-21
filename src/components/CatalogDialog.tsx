@@ -52,9 +52,8 @@ const CatalogDialog: React.FC<CatalogDialogProps> = ({
   const [locales, setLocales] = useState<string[]>(
     currentCatalog.locales || [],
   );
-  const [newLocale, setNewLocale] = useState<string>(""); // For the TextField
-
-  // Reset form fields when the dialog opens
+  const [newLocale, setNewLocale] = useState<string>(""); 
+  
   useEffect(() => {
     setName(currentCatalog.name || "");
     setVertical(currentCatalog.vertical || VerticalType.FASHION);
@@ -82,7 +81,7 @@ const CatalogDialog: React.FC<CatalogDialogProps> = ({
       return;
     }
 
-    if (isEditMode && currentCatalog?.id) {
+    if (isEditMode && "id" in currentCatalog && currentCatalog.id) {
       const payload: UpdateCatalogPayload = {
         id: currentCatalog.id,
         name,
@@ -90,7 +89,7 @@ const CatalogDialog: React.FC<CatalogDialogProps> = ({
         primary,
         locales,
       };
-      updateCatalog(payload); // TypeScript knows this is UpdateCatalogPayload
+      updateCatalog(payload);
     } else {
       const payload: CreateCatalogPayload = {
         name,
@@ -98,7 +97,7 @@ const CatalogDialog: React.FC<CatalogDialogProps> = ({
         primary,
         locales,
       };
-      createCatalog(payload); // TypeScript knows this is CreateCatalogPayload
+      createCatalog(payload);
     }
   };
 

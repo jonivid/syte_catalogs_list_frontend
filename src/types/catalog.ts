@@ -66,3 +66,11 @@ export interface ApiErrorResponse {
 export interface GetCatalogsResponse {
   data: Catalog[];
 }
+interface IndexedCatalog {
+  id: number;
+  indexedAt: string; // ISO timestamp string
+}
+
+export interface IndexCatalogsResponse {
+  indexedCatalogs: IndexedCatalog[];
+}
