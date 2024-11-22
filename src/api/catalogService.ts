@@ -9,12 +9,19 @@ import api from "./axiosInstance";
 export const fetchCatalogsApi = async (
   name?: string,
   multiLocale?: boolean,
-): Promise<Catalog[]> => {
+  currentPage: number = 1,
+  rowsPerPage: number = 10,
+): Promise<{ data: Catalog[]; total: number }> => {
   const params = new URLSearchParams();
+
   if (name) params.append("name", name);
   if (multiLocale) params.append("multiLocale", "true");
+  params.append("page", currentPage.toString());
+  params.append("rowsPerPage", rowsPerPage.toString());
 
-  const response = await api.get<Catalog[]>(`/catalogs?${params.toString()}`);
+  const response = await api.get<{ data: Catalog[]; total: number }>(
+    `/catalogs?${params.toString()}`,
+  );
   return response.data;
 };
 

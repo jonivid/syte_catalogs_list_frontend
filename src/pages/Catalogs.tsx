@@ -7,6 +7,7 @@ import {
   Checkbox,
   CircularProgress,
   FormControlLabel,
+  Pagination,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { toast } from "react-toastify";
@@ -43,6 +44,9 @@ const Catalogs: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [multiLocaleFilter, setMultiLocaleFilter] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [rowsPerPage] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
   const [columns] = useState<TableColumn<Catalog>[]>([
     {
       key: "name",
@@ -99,13 +103,30 @@ const Catalogs: React.FC = () => {
       selectedIds.length === catalogs.length ? [] : catalogs.map((c) => c.id),
     );
   };
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number,
+  ) => {
+    setPage(value);
+    fetchCatalogs(searchText, multiLocaleFilter, value);
+  };
 
   //API handlers
-  const fetchCatalogs = async (name?: string, multiLocale?: boolean) => {
+  const fetchCatalogs = async (
+    name?: string,
+    multiLocale?: boolean,
+    currentPage = page,
+  ) => {
     setLoading(true);
     try {
-      const data = await fetchCatalogsApi(name, multiLocale);
-      setCatalogs(data);
+      const response = await fetchCatalogsApi(
+        name,
+        multiLocale,
+        currentPage,
+        rowsPerPage,
+      );
+      setCatalogs(response.data);
+      setTotal(response.total);
     } catch (error) {
       toast.error("Failed to fetch catalogs");
     } finally {
@@ -115,25 +136,33 @@ const Catalogs: React.FC = () => {
   const createCatalog = async (payload: CreateCatalogPayload) => {
     try {
       const newCatalog = await createCatalogApi(payload);
-      if (newCatalog.primary) {
-        setCatalogs((prev) => {
-          const arr = prev.map((c) => {
-            if (c.vertical === newCatalog.vertical) {
-              return { ...c, primary: false };
-            } else return c;
-          });
-          arr.push(newCatalog);
-          return arr;
+
+      // Add the new catalog at the top of the list
+      setCatalogs((prev) => {
+        const updatedCatalogs = prev.map((c) => {
+          // Ensure only one catalog in the same vertical is marked as primary
+          if (newCatalog.primary && c.vertical === newCatalog.vertical) {
+            return { ...c, primary: false };
+          }
+          return c;
         });
-      } else {
-        setCatalogs((prev) => [...prev, newCatalog]);
-      }
+
+        updatedCatalogs.unshift(newCatalog);
+
+        if (updatedCatalogs.length > rowsPerPage) {
+          updatedCatalogs.splice(rowsPerPage, 1);
+        }
+
+        return updatedCatalogs;
+      });
+
       toast.success("Catalog created successfully");
       handleCloseDialog();
     } catch (error) {
       toast.error("Failed to create catalog");
     }
   };
+
   const updateCatalog = async (payload: UpdateCatalogPayload) => {
     try {
       const updatedCatalog = await updateCatalogApi(payload.id, payload);
@@ -233,16 +262,11 @@ const Catalogs: React.FC = () => {
     }
   };
 
-  //lifecycle events
   const debouncedSearchText = useDebounce(searchText, 600);
 
-  // useEffect(() => {
-  //   fetchCatalogs();
-  // }, []);
-
   useEffect(() => {
-    fetchCatalogs(debouncedSearchText, multiLocaleFilter);
-  }, [debouncedSearchText, multiLocaleFilter]);
+    fetchCatalogs(debouncedSearchText, multiLocaleFilter, page);
+  }, [debouncedSearchText, multiLocaleFilter, page]);
 
   return (
     <Box sx={{ padding: 3 }}>
@@ -299,84 +323,38 @@ const Catalogs: React.FC = () => {
           <CircularProgress />
         </Box>
       ) : (
-        // <TableContainer component={Paper}>
-        //   <Table>
-        //     <TableHead>
-        //       <TableRow>
-        //         <TableCell padding="checkbox">
-        //           <Checkbox
-        //             checked={selectedIds.length === catalogs.length}
-        //             onChange={() =>
-        //               setSelectedIds(
-        //                 selectedIds.length === catalogs.length
-        //                   ? []
-        //                   : catalogs.map((c) => c.id),
-        //               )
-        //             }
-        //           />
-        //         </TableCell>
-        //         <TableCell>Name</TableCell>
-        //         <TableCell>Vertical</TableCell>
-        //         <TableCell>Multi Local</TableCell>
-        //         <TableCell>Primary</TableCell>
-        //         <TableCell>Last Indexed</TableCell>
-        //         <TableCell>Actions</TableCell>
-        //       </TableRow>
-        //     </TableHead>
-        //     <TableBody>
-        //       {catalogs.map((catalog) => (
-        //         <TableRow
-        //           key={catalog.id}
-        //           hover
-        //           sx={{
-        //             cursor: "pointer",
-        //             "&:hover": { backgroundColor: "#f5f5f5" },
-        //           }}
-        //         >
-        //           <TableCell padding="checkbox">
-        //             <Checkbox
-        //               checked={selectedIds.includes(catalog.id)}
-        //               onChange={() => handleSelect(catalog.id)}
-        //             />
-        //           </TableCell>
-        //           <TableCell>{catalog.name}</TableCell>
-        //           <TableCell>{catalog.vertical}</TableCell>
-        //           <TableCell>
-        //             {catalog.locales.length > 1 ? "Yes" : "No"}
-        //           </TableCell>
-        //           <TableCell>{catalog.primary ? "Yes" : "No"}</TableCell>
-        //           <TableCell>
-        //             {catalog.indexedAt
-        //               ? new Date(catalog.indexedAt).toLocaleString()
-        //               : "Not Indexed Yet"}
-        //           </TableCell>
-        //           <TableCell>
-        //             <IconButton onClick={() => handleOpenDialog(catalog)}>
-        //               <EditIcon />
-        //             </IconButton>
-        //             <IconButton
-        //               color="error"
-        //               onClick={() => handleDelete(catalog.id)}
-        //             >
-        //               <DeleteIcon />
-        //             </IconButton>
-        //           </TableCell>
-        //         </TableRow>
-        //       ))}
-        //     </TableBody>
-        //   </Table>
-        // </TableContainer>
-        <GenericTable
-          data={catalogs}
-          columns={columns}
-          selectable
-          selectedIds={selectedIds}
-          onRowSelect={handleSelectRow}
-          onSelectAll={handleSelectAll}
-          onEdit={handleOpenDialog}
-          onDelete={handleDelete}
-          rowKey="id"
-        />
+        <>
+          <GenericTable
+            data={catalogs}
+            columns={columns}
+            selectable
+            selectedIds={selectedIds}
+            onRowSelect={handleSelectRow}
+            onSelectAll={handleSelectAll}
+            onEdit={handleOpenDialog}
+            onDelete={handleDelete}
+            rowKey="id"
+          />
+          <Box
+            sx={{
+              position: "fixed", // Fix it to the bottom
+              bottom: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: "transparent", // Optional: Background for better visibility
+              padding: 2,
+              boxShadow: "0 -2px 5px rgba(0, 0, 0, 0.1)", // Optional: Add a subtle shadow
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Pagination
+              count={Math.ceil(total / rowsPerPage)}
+              page={page}
+              onChange={handlePageChange}
+            />
+          </Box>
+        </>
       )}
       <CatalogDialog
         open={openDialog}

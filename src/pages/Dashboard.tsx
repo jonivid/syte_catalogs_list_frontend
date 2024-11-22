@@ -20,7 +20,7 @@ const Dashboard: React.FC = () => {
       {/* Features Section */}
       <Grid container spacing={{ xs: 2, md: 3 }} sx={{ marginTop: 2 }}>
         {/* Card 1: View Catalogs */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12}>
           <Paper
             elevation={3}
             sx={{
@@ -58,11 +58,10 @@ const Dashboard: React.FC = () => {
               "&:hover": { backgroundColor: "#3d3d3d" },
             }}
           >
-            <Typography variant="h6">Discover Page</Typography>
+            <Typography variant="h6">Visual Discovery</Typography>
             <Typography variant="body1" color="textSecondary">
-              A visually dynamic space for trending products, AI-powered
-              recommendations, and personalized collections based on user
-              behavior (Coming Soon).
+              Help shoppers instantly find items they want with an inspiring
+              visual search experience, powered by AI (Coming Soon).
             </Typography>
             <Tooltip title="This feature is coming soon!" arrow>
               <span>
@@ -72,7 +71,37 @@ const Dashboard: React.FC = () => {
                   disabled
                   sx={{ marginTop: 2 }}
                 >
-                  Explore Discover Page
+                  Explore More
+                </Button>
+              </span>
+            </Tooltip>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper
+            elevation={3}
+            sx={{
+              padding: 3,
+              textAlign: "center",
+              backgroundColor: "#2d2d2d",
+              color: "#ffffff",
+              "&:hover": { backgroundColor: "#3d3d3d" },
+            }}
+          >
+            <Typography variant="h6">AI Tagging and Merchandising</Typography>
+            <Typography variant="body1" color="textSecondary">
+              Drive Efficiency & Enrich Catalogue Data With Automatic Product
+              Tagging (Coming Soon).
+            </Typography>
+            <Tooltip title="This feature is coming soon!" arrow>
+              <span>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  disabled
+                  sx={{ marginTop: 2 }}
+                >
+                  Explore More
                 </Button>
               </span>
             </Tooltip>
