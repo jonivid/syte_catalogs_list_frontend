@@ -22,16 +22,19 @@ The **Catalog Management Frontend** is a React + TypeScript application designed
 ## Features
 
 1. **Authentication**:
+
    - JWT-based login system.
    - Role-based access using context and state management.
 
 2. **Catalog Management**:
+
    - View paginated and searchable catalogs in a table format.
    - Add new catalogs with a form dialog.
    - Update existing catalogs.
    - Delete catalogs individually or in bulk.
 
 3. **Reusable Components**:
+
    - **GenericTable**: Dynamic tables for displaying catalog data.
    - **ErrorBoundary**: Graceful error handling for components.
    - **NavBar**: Navigation bar for seamless navigation between routes.
@@ -44,37 +47,36 @@ The **Catalog Management Frontend** is a React + TypeScript application designed
 ## Directory Structure
 
 ```plaintext
-├── src/
-│   ├── components/             # Reusable UI components
+syte_catalogs_list_frontend/
+├── src/                       # Source code
+│   ├── components/            # Reusable UI components
 │   │   ├── CatalogDialog.tsx   # Dialog for adding/editing catalogs
 │   │   ├── ErrorBoundary.tsx   # Error boundary for graceful error handling
 │   │   ├── GenericTable.tsx    # Generic table component
 │   │   ├── MainLayout.tsx      # Layout for the application
 │   │   ├── NavBar.tsx          # Navigation bar component
-│   ├── pages/                  # Page-level components
+│   ├── pages/                 # Page-level components
 │   │   ├── Catalogs.tsx        # Catalogs management page
 │   │   ├── Dashboard.tsx       # Dashboard overview
 │   │   ├── Home.tsx            # Home page
 │   │   ├── Login.tsx           # Login page
 │   │   ├── NotFound.tsx        # 404 Not Found page
-│   ├── context/                # Context for global state
+│   ├── context/               # Context for global state
 │   │   ├── AuthContext.tsx     # Authentication context provider
-│   ├── services/               # API service handlers
+│   ├── services/              # API service handlers
 │   │   ├── auth.ts             # Authentication API calls
 │   │   ├── catalogService.ts   # Catalog API calls
 │   │   ├── axiosInstance.ts    # Axios configuration
-│   ├── utils/                  # Utility functions and helpers
+│   ├── utils/                 # Utility functions and helpers
 │   │   ├── storage.ts          # Local storage helpers
 │   │   ├── utilsFunctions.ts   # General utility functions
-│   ├── styles/                 # Theming and styling
+│   ├── styles/                # Theming and styling
 │   │   ├── theme.ts            # MUI theme configuration
 │   │   ├── styledComponents.ts # Styled-components configuration
-│   ├── App.tsx                 # Main application component
-│   ├── index.tsx               # Application bootstrap
-├── .env                        # Environment variables file
-├── Dockerfile                  # Dockerfile for frontend
-├── package.json                # Project dependencies and scripts
-├── vite.config.ts              # Vite configuration
+│   ├── App.tsx                # Main application component
+├── .env                       # Environment variables file
+├── Dockerfile                 # Docker configuration
+├── nginx.conf                 # Nginx configuration
 ```
 
 ---
@@ -100,11 +102,13 @@ VITE_API_URL=http://localhost:8001
 ### Running Locally Without Docker
 
 1. **Install Dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Start the Development Server**:
+
    ```bash
    npm run dev
    ```
@@ -112,7 +116,7 @@ VITE_API_URL=http://localhost:8001
 3. **Access the Application**:
    The application will be running at:
    ```plaintext
-   http://localhost:5173
+   http://localhost:3000
    ```
 
 ---
@@ -128,7 +132,7 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-COPY package*.json ./ 
+COPY package*.json ./
 RUN npm install
 
 COPY . .
@@ -147,24 +151,25 @@ Add the following service to your `docker-compose.yml` file:
 
 ```yaml
 frontend:
-    build:
-      context: ./syte_catalogs_list_frontend
-      dockerfile: Dockerfile
-      args:
-        VITE_API_URL: ${VITE_API_URL}
-    ports:
-      - "3000:80"
-    env_file:
-      - .env
-    depends_on:
-      - backend
-    networks:
-      - syte_network
+  build:
+    context: ./syte_catalogs_list_frontend
+    dockerfile: Dockerfile
+    args:
+      VITE_API_URL: ${VITE_API_URL}
+  ports:
+    - "3000:80"
+  env_file:
+    - .env
+  depends_on:
+    - backend
+  networks:
+    - syte_network
 ```
 
 #### Starting the Services
 
 1. Run the following command from the project root containing `docker-compose.yml`:
+
    ```bash
    docker-compose up --build
    ```
@@ -190,15 +195,19 @@ The following scripts are defined in `package.json`:
 ## Pages Overview
 
 1. **Home Page** (`/`):
+
    - A landing page for the application.
 
 2. **Login Page** (`/login`):
+
    - Handles user authentication and redirects to the dashboard upon success.
 
 3. **Dashboard** (`/dashboard`):
+
    - Provides an overview of catalog data.
 
 4. **Catalogs** (`/catalogs`):
+
    - Displays a paginated list of catalogs.
    - Allows CRUD operations on catalogs.
 
